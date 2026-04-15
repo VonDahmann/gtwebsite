@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Graph Theory — Complete Study Guide</title>
+  <meta name="description" content="Comprehensive interactive guide to Graph Theory: definitions, algorithms (Kruskal, Prim, Ford-Fulkerson), trees, connectivity, coloring, and network flows. With Mermaid.js visualizations." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+
+  <nav id="main-nav" class="nav">
+    <div class="nav__brand"><span class="nav__icon">◈</span><span class="nav__title">Graph Theory</span></div>
+    <ul class="nav__links">
+      <li><a href="#history" class="nav__link" data-section="history">History</a></li>
+      <li><a href="#fundamentals" class="nav__link" data-section="fundamentals">Basics</a></li>
+      <li><a href="#directed" class="nav__link" data-section="directed">Directed</a></li>
+      <li><a href="#types" class="nav__link" data-section="types">Types</a></li>
+      <li><a href="#representations" class="nav__link" data-section="representations">Matrices</a></li>
+      <li><a href="#paths" class="nav__link" data-section="paths">Paths</a></li>
+      <li><a href="#connectivity" class="nav__link" data-section="connectivity">Connectivity</a></li>
+      <li><a href="#eulerian" class="nav__link" data-section="eulerian">Euler/Hamilton</a></li>
+      <li><a href="#trees" class="nav__link" data-section="trees">Trees</a></li>
+      <li><a href="#mst" class="nav__link" data-section="mst">MST</a></li>
+      <li><a href="#coloring" class="nav__link" data-section="coloring">Coloring</a></li>
+      <li><a href="#flow" class="nav__link" data-section="flow">Flow</a></li>
+    </ul>
+    <button id="theme-toggle" class="nav__theme-btn" aria-label="Toggle theme"><span class="theme-icon">☀</span></button>
+  </nav>
+
+  <header id="hero" class="hero">
+    <div class="hero__bg-grid"></div>
+    <div class="hero__content">
+      <p class="hero__tag">University-Level Complete Study Guide</p>
+      <h1 class="hero__title">
+        <span class="hero__title-line">Foundations of</span>
+        <span class="hero__title-accent">Graph Theory</span>
+      </h1>
+      <p class="hero__subtitle">An interactive visual exploration covering vocabulary, algorithms, trees, connectivity, coloring, and network flows — from Euler's bridges to Ford-Fulkerson.</p>
+      <a href="#history" class="hero__cta">Begin Studying ↓</a>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ══════════════ 01 HISTORY & APPLICATIONS ══════════════ -->
+    <section id="history" class="section">
+      <div class="section__header"><span class="section__number">01</span><h2 class="section__title">History & Applications</h2></div>
+      <div class="section__body">
+        <div class="section__text">
+          <h3>Origins — The Königsberg Bridges (1736)</h3>
+          <p>Graph theory originated when <strong>Leonhard Euler</strong> solved the famous <strong>Königsberg Bridge Problem</strong>. The city had 4 land masses connected by 7 bridges. Euler asked: <em>Can one walk through the city crossing each bridge exactly once?</em> He represented lands as <strong>vertices</strong> and bridges as <strong>edges</strong>, proving the answer was <strong>no</strong> — since more than 2 vertices had an odd degree.</p>
+          <h3>Key Milestones</h3>
+          <ul class="term-list">
+            <li><strong>1736 — Euler:</strong> Foundation of graph theory with the Königsberg problem.</li>
+            <li><strong>19th century — Kirchhoff:</strong> Used graphs to analyze electrical circuits.</li>
+            <li><strong>19th century — Cayley:</strong> Applied graphs to chemical molecular structures.</li>
+            <li><strong>1936 — Kőnig:</strong> Published <em>Theory of Finite and Infinite Graphs</em>, formalizing many concepts.</li>
+            <li><strong>20th century — Erdős & Berge:</strong> Advanced coloring, connectivity, and combinatorial optimization.</li>
+          </ul>
+          <h3>Applications</h3>
+          <p>Graphs are used in <strong>computer science</strong> (networks, compilers, web search), <strong>chemistry</strong> (molecular modeling), <strong>biology</strong> (DNA sequencing), <strong>social sciences</strong> (social networks), <strong>transportation</strong> (routing, GPS), <strong>image processing</strong>, and <strong>AI</strong>.</p>
+        </div>
+        <div class="section__diagram">
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Königsberg Bridges — Graph Model</h4>
+            <p class="diagram-card__caption">4 land masses (A,B,C,D) connected by 7 bridges. All vertices have odd degree → no Eulerian path exists.</p>
+            <pre class="mermaid">
+graph TD
+    A((A)) --- B((B))
+    A --- B
+    A --- C((C))
+    A --- C
+    A --- D((D))
+    B --- D
+    C --- D
+            </pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ 02 FUNDAMENTALS ══════════════ -->
+    <section id="fundamentals" class="section section--alt">
+      <div class="section__header"><span class="section__number">02</span><h2 class="section__title">Fundamentals</h2></div>
+      <div class="section__body">
+        <div class="section__text">
+          <h3>What is a Graph?</h3>
+          <p>A <strong>finite graph</strong> <em>G = (V, E)</em> is defined by a finite set <em>V = {v₁, v₂, …, vₙ}</em> of <strong>vertices</strong> (nodes) and a finite set <em>E = {e₁, e₂, …, eₘ}</em> of <strong>edges</strong>.</p>
+          <div class="callout callout--definition">
+            <h4>Graph Order & Size</h4>
+            <p><strong>Order</strong> of G = <em>|V| = n</em> (number of vertices). <strong>Size</strong> of G = <em>|E| = m</em> (number of edges).</p>
+          </div>
+          <h3>Vertex Degree</h3>
+          <p>The <strong>degree</strong> of a vertex is the number of edges incident to it, denoted <em>deg(v)</em>.</p>
+          <ul class="term-list">
+            <li><strong>Undirected graph:</strong> <em>deg(v)</em> = number of edges touching v.</li>
+            <li><strong>Directed graph:</strong> <em>deg(v) = deg⁺(v) + deg⁻(v)</em> where deg⁺ is out-degree and deg⁻ is in-degree.</li>
+          </ul>
+          <h3>Key Terms</h3>
+          <ul class="term-list">
+            <li><strong>Adjacent:</strong> Two vertices connected by an edge.</li>
+            <li><strong>Incident:</strong> An edge is incident to the vertices it connects.</li>
+            <li><strong>Predecessor/Successor:</strong> In a digraph, if (u,v) ∈ E, then u is a predecessor of v and v is a successor of u.</li>
+          </ul>
+
+          <!-- Check Your Understanding: Fundamentals -->
+          <div class="quiz-container" data-quiz="fundamentals">
+            <p class="quiz-question">What does the <em>order</em> of a graph refer to?</p>
+            <div class="quiz-options">
+              <label class="quiz-label"><input type="radio" name="q-fund" value="a"> The number of edges (|E|)</label>
+              <label class="quiz-label"><input type="radio" name="q-fund" value="b" data-correct="true"> The number of vertices (|V|)</label>
+              <label class="quiz-label"><input type="radio" name="q-fund" value="c"> The maximum degree of any vertex</label>
+            </div>
+            <button class="quiz-btn">Check Answer</button>
+            <div class="quiz-feedback hidden"></div>
+          </div>
+        </div>
+        <div class="section__diagram">
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Graph G — Order 5, Size 6</h4>
+            <p class="diagram-card__caption">deg(V1)=2, deg(V2)=3, deg(V3)=2, deg(V4)=3, deg(V5)=2. Note: ∑deg = 2×|E| = 12.</p>
+            <pre class="mermaid">
+graph TD
+    V1((V1)) --- V2((V2))
+    V1 --- V4((V4))
+    V2 --- V3((V3))
+    V2 --- V5((V5))
+    V3 --- V4
+    V4 --- V5
+            </pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ 03 DIRECTED vs UNDIRECTED ══════════════ -->
+    <section id="directed" class="section">
+      <div class="section__header"><span class="section__number">03</span><h2 class="section__title">Directed vs. Undirected Graphs</h2></div>
+      <div class="section__body">
+        <div class="section__text">
+          <h3>Undirected Graphs</h3>
+          <p>Edges have <strong>no orientation</strong>. The edge <em>{u, v}</em> is identical to <em>{v, u}</em>. The relationship is <strong>symmetric</strong>.</p>
+          <h3>Directed Graphs (Digraphs)</h3>
+          <p>Each edge is an ordered pair <em>(u, v)</em> called an <strong>arc</strong>, going <strong>from</strong> source u <strong>to</strong> target v. Each arc has an <strong>origin</strong> (source) and a <strong>goal</strong> (target).</p>
+          <div class="callout callout--info">
+            <h4>In-Degree & Out-Degree</h4>
+            <p><strong>In-degree</strong> <em>deg⁻(v)</em>: number of arcs pointing into v. <strong>Out-degree</strong> <em>deg⁺(v)</em>: number of arcs leaving v. For any digraph: <em>∑deg⁺(v) = ∑deg⁻(v) = |E|</em>.</p>
+          </div>
+          <h3>When to Use Each</h3>
+          <ul class="term-list">
+            <li><strong>Undirected:</strong> Friendships, two-way roads, chemical bonds.</li>
+            <li><strong>Directed:</strong> Web links, one-way streets, dependencies (DAGs), Twitter follows.</li>
+          </ul>
+
+          <!-- Check Your Understanding: Directed -->
+          <div class="quiz-container" data-quiz="directed">
+            <p class="quiz-question">In any directed graph, what is the relationship between the sum of in-degrees and out-degrees?</p>
+            <div class="quiz-options">
+              <label class="quiz-label"><input type="radio" name="q-dir" value="a"> The sum of in-degrees is usually larger.</label>
+              <label class="quiz-label"><input type="radio" name="q-dir" value="b" data-correct="true"> They are always equal, and both equal the number of edges.</label>
+              <label class="quiz-label"><input type="radio" name="q-dir" value="c"> They are always equal to the number of vertices.</label>
+            </div>
+            <button class="quiz-btn">Check Answer</button>
+            <div class="quiz-feedback hidden"></div>
+          </div>
+        </div>
+        <div class="section__diagram section__diagram--dual">
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Undirected Graph</h4>
+            <p class="diagram-card__caption">Symmetric edges — no arrows.</p>
+            <pre class="mermaid">
+graph LR
+    A((A)) --- B((B))
+    B --- C((C))
+    A --- C
+    C --- D((D))
+            </pre>
+          </div>
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Directed Graph (Digraph)</h4>
+            <p class="diagram-card__caption">Each arc has a source and target. deg⁺(A)=2, deg⁻(A)=1.</p>
+            <pre class="mermaid">
+graph LR
+    A((A)) --> B((B))
+    B --> C((C))
+    A --> C
+    C --> D((D))
+    D --> A
+            </pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ 04 GRAPH TYPES ══════════════ -->
+    <section id="types" class="section section--alt">
+      <div class="section__header"><span class="section__number">04</span><h2 class="section__title">Graph Types</h2></div>
+      <div class="section__body">
+        <div class="section__text">
+          <h3>Simple Graph vs Multigraph</h3>
+          <p>A <strong>simple graph</strong> has no loops and at most one edge between any two vertices. A <strong>multigraph</strong> may have loops and/or multiple edges between the same pair of vertices.</p>
+          <h3>Planar vs Non-Planar</h3>
+          <p>A <strong>planar graph</strong> can be drawn on a flat surface without any edges crossing. A <strong>non-planar graph</strong> cannot avoid edge crossings no matter how it is redrawn.</p>
+          <h3>Special Directed Graph Types</h3>
+          <ul class="term-list">
+            <li><strong>Symmetric:</strong> <em>(x,y) ∈ E ⇒ (y,x) ∈ E</em> — every arc has its reverse.</li>
+            <li><strong>Antisymmetric:</strong> <em>(x,y) ∈ E ⇒ (y,x) ∉ E</em> — no arc has its reverse.</li>
+            <li><strong>Transitive:</strong> <em>(x,y) ∈ E</em> and <em>(y,z) ∈ E ⇒ (x,z) ∈ E</em>.</li>
+            <li><strong>Regular:</strong> All vertices have the same degree.</li>
+            <li><strong>Tournament:</strong> A complete directed graph where every pair has exactly one arc (no bidirectional, no missing edges).</li>
+          </ul>
+          <h3>Subgraphs</h3>
+          <ul class="term-list">
+            <li><strong>Induced subgraph:</strong> Remove vertices and all their incident edges.</li>
+            <li><strong>Spanning subgraph:</strong> Remove only edges (keep all vertices).</li>
+          </ul>
+        </div>
+        <div class="section__diagram section__diagram--dual">
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Complete Graph K₄</h4>
+            <p class="diagram-card__caption">Every pair connected. |E| = n(n-1)/2 = 6.</p>
+            <pre class="mermaid">
+graph TD
+    V1((1)) --- V2((2))
+    V1 --- V3((3))
+    V1 --- V4((4))
+    V2 --- V3
+    V2 --- V4
+    V3 --- V4
+    style V1 fill:#8b5cf6,stroke:#7c3aed,color:#fff
+    style V2 fill:#8b5cf6,stroke:#7c3aed,color:#fff
+    style V3 fill:#8b5cf6,stroke:#7c3aed,color:#fff
+    style V4 fill:#8b5cf6,stroke:#7c3aed,color:#fff
+            </pre>
+          </div>
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Tournament (Complete Digraph)</h4>
+            <p class="diagram-card__caption">Every pair has exactly one directed arc.</p>
+            <pre class="mermaid">
+graph TD
+    V1((1)) --> V2((2))
+    V1 --> V3((3))
+    V2 --> V3
+    V3 --> V4((4))
+    V1 --> V4
+    V4 --> V2
+            </pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ 05 REPRESENTATIONS ══════════════ -->
+    <section id="representations" class="section">
+      <div class="section__header"><span class="section__number">05</span><h2 class="section__title">Graph Representations</h2></div>
+      <div class="section__body">
+        <div class="section__text">
+          <h3>Adjacency Matrix</h3>
+          <p>An <em>n × n</em> matrix where entry <em>A[i][j]</em> = 1 if there is an edge from vertex i to vertex j, and 0 otherwise.</p>
+          <ul class="term-list">
+            <li><strong>Undirected graph:</strong> The matrix is <strong>symmetric</strong> (A[i][j] = A[j][i]).</li>
+            <li><strong>Directed graph:</strong> The matrix is generally <strong>non-symmetric</strong>. A[i][j] = 1 means an outgoing arc from i to j.</li>
+          </ul>
+          <div class="matrix-container">
+            <p class="matrix-label">Adjacency Matrix (Undirected):</p>
+            <table class="matrix-table">
+              <tr><th></th><th>V1</th><th>V2</th><th>V3</th><th>V4</th><th>V5</th></tr>
+              <tr><th>V1</th><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+              <tr><th>V2</th><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+              <tr><th>V3</th><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+              <tr><th>V4</th><td>1</td><td>0</td><td>1</td><td>0</td><td>1</td></tr>
+              <tr><th>V5</th><td>0</td><td>1</td><td>0</td><td>1</td><td>0</td></tr>
+            </table>
+          </div>
+          <h3>Arc Incidence Matrix</h3>
+          <p>An <em>n × m</em> matrix linking vertices to edges.</p>
+          <ul class="term-list">
+            <li><strong>Undirected:</strong> A[i][j] = 1 if vertex i is incident to edge j, 0 otherwise.</li>
+            <li><strong>Directed:</strong> A[i][j] = +1 if vertex i is the source of arc j, −1 if target, 0 otherwise.</li>
+          </ul>
+        </div>
+        <div class="section__diagram">
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Reference Graph for Matrices</h4>
+            <p class="diagram-card__caption">5 vertices, 6 edges. See adjacency matrix on the left.</p>
+            <pre class="mermaid">
+graph TD
+    V1((V1)) --- V2((V2))
+    V1 --- V4((V4))
+    V2 --- V3((V3))
+    V2 --- V5((V5))
+    V3 --- V4
+    V4 --- V5
+            </pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ 06 PATHS, CHAINS, CYCLES ══════════════ -->
+    <section id="paths" class="section section--alt">
+      <div class="section__header"><span class="section__number">06</span><h2 class="section__title">Paths, Chains, Cycles & Circuits</h2></div>
+      <div class="section__body">
+        <div class="section__text">
+          <h3>Chain (Undirected) vs Path (Directed)</h3>
+          <p>A <strong>chain</strong> (in an undirected graph) is a sequence of vertices connected by edges. A <strong>path</strong> (in a directed graph) follows arc directions. Length = number of edges used.</p>
+          <h3>Elementary vs Simple</h3>
+          <ul class="term-list">
+            <li><strong>Elementary chain/path:</strong> Cannot visit the same <strong>vertex</strong> twice.</li>
+            <li><strong>Simple chain/path:</strong> Cannot use the same <strong>edge</strong> twice (but may revisit vertices).</li>
+          </ul>
+          <h3>Cycle vs Circuit</h3>
+          <ul class="term-list">
+            <li><strong>Cycle:</strong> A simple closed chain (undirected) — starts and ends at the same vertex, no repeated edges.</li>
+            <li><strong>Circuit:</strong> A simple closed path (directed) — follows arc directions back to start.</li>
+          </ul>
+          <div class="callout callout--warning">
+            <h4>Acyclic Graphs</h4>
+            <p>A graph with no cycles is <strong>acyclic</strong>. A connected acyclic undirected graph is a <strong>tree</strong>. A directed acyclic graph is a <strong>DAG</strong> — crucial for topological sorting and dependency resolution.</p>
+          </div>
+
+          <!-- Check Your Understanding: Paths -->
+          <div class="quiz-container" data-quiz="paths">
+            <p class="quiz-question">What is the difference between an <em>elementary</em> chain and a <em>simple</em> chain?</p>
+            <div class="quiz-options">
+              <label class="quiz-label"><input type="radio" name="q-path" value="a"> Simple visits no vertex twice; elementary uses no edge twice.</label>
+              <label class="quiz-label"><input type="radio" name="q-path" value="b"> They are exactly the same thing.</label>
+              <label class="quiz-label"><input type="radio" name="q-path" value="c" data-correct="true"> Elementary visits no vertex twice; simple uses no edge twice.</label>
+            </div>
+            <button class="quiz-btn">Check Answer</button>
+            <div class="quiz-feedback hidden"></div>
+          </div>
+        </div>
+        <div class="section__diagram section__diagram--dual">
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Path: A → B → D → E</h4>
+            <p class="diagram-card__caption">Elementary path (green) — visits no vertex twice.</p>
+            <pre class="mermaid">
+graph TD
+    A((A)) --- B((B))
+    B --- C((C))
+    B --- D((D))
+    D --- E((E))
+    C --- E
+    A --- C
+    style A fill:#22c55e,stroke:#16a34a,color:#fff
+    style B fill:#22c55e,stroke:#16a34a,color:#fff
+    style D fill:#22c55e,stroke:#16a34a,color:#fff
+    style E fill:#22c55e,stroke:#16a34a,color:#fff
+            </pre>
+          </div>
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Cycle: B → C → E → D → B</h4>
+            <p class="diagram-card__caption">Closed chain (amber) — starts and ends at B.</p>
+            <pre class="mermaid">
+graph TD
+    A((A)) --- B((B))
+    B --- C((C))
+    B --- D((D))
+    D --- E((E))
+    C --- E
+    A --- C
+    style B fill:#f59e0b,stroke:#d97706,color:#fff
+    style C fill:#f59e0b,stroke:#d97706,color:#fff
+    style D fill:#f59e0b,stroke:#d97706,color:#fff
+    style E fill:#f59e0b,stroke:#d97706,color:#fff
+            </pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ 07 CONNECTIVITY ══════════════ -->
+    <section id="connectivity" class="section">
+      <div class="section__header"><span class="section__number">07</span><h2 class="section__title">Connectivity & Strongly Connected Components</h2></div>
+      <div class="section__body">
+        <div class="section__text">
+          <h3>Connected Graph</h3>
+          <p>An undirected graph is <strong>connected</strong> if there exists a chain between any pair of vertices. For a directed graph, we speak of connectivity if, <em>forgetting</em> edge orientation, the graph is connected.</p>
+          <h3>Strongly Connected Graph</h3>
+          <p>A directed graph is <strong>strongly connected</strong> if there is a directed path from <strong>any vertex to any other vertex</strong>.</p>
+          <div class="callout callout--definition">
+            <h4>Marking Algorithm for SCCs</h4>
+            <ol class="algo-steps">
+              <li>Select a vertex, mark it with <strong>+</strong>.</li>
+              <li>Mark all <strong>successors</strong> (and successors of successors) with <strong>+</strong>.</li>
+              <li>Mark all <strong>predecessors</strong> (and predecessors of predecessors) with <strong>−</strong>.</li>
+              <li>Vertices marked with <strong>both + and −</strong> form an SCC.</li>
+              <li>Remove the SCC and <strong>repeat</strong> on remaining vertices.</li>
+            </ol>
+          </div>
+          <h3>Example</h3>
+          <p>In the graph shown, after applying the marking algorithm: <em>{V1, V2, V4}</em> is one SCC, <em>{V3, V5}</em> is another, and <em>{V6}</em> is the third.</p>
+        </div>
+        <div class="section__diagram">
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Finding SCCs</h4>
+            <p class="diagram-card__caption">3 SCCs: {V1,V2,V4} (blue), {V3,V5} (green), {V6} (rose).</p>
+            <pre class="mermaid">
+graph LR
+    V1((V1)) --> V2((V2))
+    V2 --> V4((V4))
+    V4 --> V1
+    V2 --> V3((V3))
+    V3 --> V5((V5))
+    V5 --> V3
+    V4 --> V6((V6))
+    V5 --> V6
+    style V1 fill:#3b82f6,stroke:#2563eb,color:#fff
+    style V2 fill:#3b82f6,stroke:#2563eb,color:#fff
+    style V4 fill:#3b82f6,stroke:#2563eb,color:#fff
+    style V3 fill:#22c55e,stroke:#16a34a,color:#fff
+    style V5 fill:#22c55e,stroke:#16a34a,color:#fff
+    style V6 fill:#f43f5e,stroke:#e11d48,color:#fff
+            </pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ 08 EULERIAN & HAMILTONIAN ══════════════ -->
+    <section id="eulerian" class="section section--alt">
+      <div class="section__header"><span class="section__number">08</span><h2 class="section__title">Eulerian & Hamiltonian Problems</h2></div>
+      <div class="section__body">
+        <div class="section__text">
+          <h3>Eulerian Problem</h3>
+          <p>An <strong>Eulerian chain/cycle</strong> uses each <strong>edge exactly once</strong>. A graph is <strong>Eulerian</strong> if it admits an Eulerian cycle.</p>
+          <div class="callout callout--definition">
+            <h4>Euler's Theorem</h4>
+            <ul>
+              <li>If <strong>more than 2</strong> vertices have an odd degree → <strong>not Eulerian</strong>.</li>
+              <li>If <strong>exactly 2</strong> vertices have an odd degree → Eulerian <strong>path</strong> exists (start/end at those vertices).</li>
+              <li>If <strong>all vertices</strong> have even degree → Eulerian <strong>cycle</strong> exists (start from any vertex).</li>
+            </ul>
+          </div>
+          <h3>Hamiltonian Problem</h3>
+          <p>A <strong>Hamiltonian path</strong> visits each <strong>vertex exactly once</strong>. A <strong>Hamiltonian cycle</strong> visits every vertex exactly once and returns to start. A graph admitting a Hamiltonian cycle is <strong>Hamiltonian</strong>.</p>
+          <div class="callout callout--warning">
+            <h4>NP-Complete</h4>
+            <p>The Hamiltonian cycle problem is <strong>NP-complete</strong> — no known efficient algorithm solves it for all graphs. This is related to the <strong>Traveling Salesman Problem</strong>.</p>
+          </div>
+
+          <!-- Check Your Understanding: Eulerian -->
+          <div class="quiz-container" data-quiz="eulerian">
+            <p class="quiz-question">According to Euler's Theorem, if a connected graph has 4 vertices with an odd degree, what can we conclude?</p>
+            <div class="quiz-options">
+              <label class="quiz-label"><input type="radio" name="q-euler" value="a"> The graph admits an Eulerian cycle.</label>
+              <label class="quiz-label"><input type="radio" name="q-euler" value="b"> The graph admits an Eulerian path, but not a cycle.</label>
+              <label class="quiz-label"><input type="radio" name="q-euler" value="c" data-correct="true"> The graph is not Eulerian (neither cycle nor path).</label>
+            </div>
+            <button class="quiz-btn">Check Answer</button>
+            <div class="quiz-feedback hidden"></div>
+          </div>
+        </div>
+        <div class="section__diagram section__diagram--dual">
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Eulerian Chain</h4>
+            <p class="diagram-card__caption">Exactly 2 odd-degree vertices (V3, V4) → Eulerian path starting at V3 or V4.</p>
+            <pre class="mermaid">
+graph TD
+    V1((V1)) --- V2((V2))
+    V1 --- V4((V4))
+    V2 --- V3((V3))
+    V2 --- V5((V5))
+    V3 --- V4
+    V4 --- V5
+    style V3 fill:#f59e0b,stroke:#d97706,color:#fff
+    style V4 fill:#f59e0b,stroke:#d97706,color:#fff
+            </pre>
+          </div>
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Hamiltonian Cycle</h4>
+            <p class="diagram-card__caption">Cycle V1→V2→V3→V5→V4→V1 visits every vertex exactly once.</p>
+            <pre class="mermaid">
+graph TD
+    V1((V1)) --- V2((V2))
+    V1 --- V4((V4))
+    V2 --- V3((V3))
+    V2 --- V5((V5))
+    V3 --- V4
+    V4 --- V5
+    V3 --- V5
+    style V1 fill:#22c55e,stroke:#16a34a,color:#fff
+    style V2 fill:#22c55e,stroke:#16a34a,color:#fff
+    style V3 fill:#22c55e,stroke:#16a34a,color:#fff
+    style V4 fill:#22c55e,stroke:#16a34a,color:#fff
+    style V5 fill:#22c55e,stroke:#16a34a,color:#fff
+            </pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ 09 TREES ══════════════ -->
+    <section id="trees" class="section">
+      <div class="section__header"><span class="section__number">09</span><h2 class="section__title">Trees, Forests & Spanning Trees</h2></div>
+      <div class="section__body">
+        <div class="section__text">
+          <h3>Bridge</h3>
+          <p>An edge is a <strong>bridge</strong> (isthmus) if its removal <strong>disconnects</strong> the graph — i.e., it increases the number of connected components. Equivalently, a bridge is an edge that <strong>does not belong to any cycle</strong>.</p>
+          <h3>Tree — Five Equivalent Properties</h3>
+          <p>A <strong>tree</strong> is a connected graph containing no cycle. All edges of a tree are bridges. For a graph G with n vertices:</p>
+          <ol class="algo-steps">
+            <li><strong>P1:</strong> G is connected and acyclic.</li>
+            <li><strong>P2:</strong> G is connected and minimal (removing any edge disconnects it).</li>
+            <li><strong>P3:</strong> G is connected and has exactly <em>n − 1</em> edges.</li>
+            <li><strong>P4:</strong> G is acyclic and maximal (adding any edge creates a cycle).</li>
+            <li><strong>P5:</strong> There is a <strong>unique path</strong> between any two vertices.</li>
+          </ol>
+          <h3>Special Tree Structures</h3>
+          <ul class="term-list">
+            <li><strong>Spanning tree:</strong> A maximum subgraph that is a tree (contains all vertices, no cycles).</li>
+            <li><strong>Rooted tree:</strong> A tree with a distinguished root vertex — unique path from root to every vertex.</li>
+            <li><strong>Forest:</strong> A set of trees (acyclic graph, possibly disconnected).</li>
+          </ul>
+        </div>
+        <div class="section__diagram section__diagram--dual">
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">A Tree (n=5, edges=4)</h4>
+            <p class="diagram-card__caption">Connected, acyclic, n−1 = 4 edges. Every edge is a bridge.</p>
+            <pre class="mermaid">
+graph TD
+    V1((V1)) --- V2((V2))
+    V1 --- V4((V4))
+    V2 --- V3((V3))
+    V4 --- V5((V5))
+    style V1 fill:#22c55e,stroke:#16a34a,color:#fff
+    style V2 fill:#22c55e,stroke:#16a34a,color:#fff
+    style V3 fill:#22c55e,stroke:#16a34a,color:#fff
+    style V4 fill:#22c55e,stroke:#16a34a,color:#fff
+    style V5 fill:#22c55e,stroke:#16a34a,color:#fff
+            </pre>
+          </div>
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Spanning Tree from G</h4>
+            <p class="diagram-card__caption">Original graph (6 edges) reduced to spanning tree (4 edges) by removing 2 edges.</p>
+            <pre class="mermaid">
+graph TD
+    V1((V1)) --- V2((V2))
+    V1 --- V4((V4))
+    V2 --- V5((V5))
+    V2 --- V3((V3))
+    style V1 fill:#8b5cf6,stroke:#7c3aed,color:#fff
+    style V2 fill:#8b5cf6,stroke:#7c3aed,color:#fff
+    style V3 fill:#8b5cf6,stroke:#7c3aed,color:#fff
+    style V4 fill:#8b5cf6,stroke:#7c3aed,color:#fff
+    style V5 fill:#8b5cf6,stroke:#7c3aed,color:#fff
+            </pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ 10 MST ALGORITHMS ══════════════ -->
+    <section id="mst" class="section section--alt">
+      <div class="section__header"><span class="section__number">10</span><h2 class="section__title">Minimum Spanning Tree Algorithms</h2></div>
+      <div class="section__body">
+        <div class="section__text">
+          <h3>The MST Problem</h3>
+          <p>Given a connected, weighted graph, find a <strong>spanning tree</strong> that <strong>minimizes the total edge weight</strong>. For a Maximum Spanning Tree, maximize instead.</p>
+
+          <h3>Kruskal's Algorithm (1956)</h3>
+          <div class="callout callout--definition">
+            <h4>Steps</h4>
+            <ol class="algo-steps">
+              <li><strong>Sort</strong> all edges by weight in ascending order.</li>
+              <li><strong>Add</strong> edges one by one to the tree, <strong>skipping</strong> any edge that would create a cycle.</li>
+              <li><strong>Stop</strong> when the tree has <em>n − 1</em> edges (covers all vertices).</li>
+            </ol>
+            <p><em>Kruskal maintains an acyclic forest, merging components.</em></p>
+          </div>
+
+          <h3>Prim's Algorithm (1957)</h3>
+          <div class="callout callout--info">
+            <h4>Steps</h4>
+            <ol class="algo-steps">
+              <li><strong>Choose</strong> any starting vertex.</li>
+              <li>From all edges connecting the tree to non-tree vertices, pick the <strong>minimum-weight edge</strong>.</li>
+              <li><strong>Add</strong> the edge and its incident vertex to the tree.</li>
+              <li><strong>Repeat</strong> until all vertices are in the tree.</li>
+            </ol>
+            <p><em>Prim grows a single tree, one vertex at a time.</em></p>
+          </div>
+
+          <h3>Key Difference</h3>
+          <p><strong>Kruskal</strong> sorts globally and merges forests. <strong>Prim</strong> grows locally from a single vertex. Both produce an MST with the <strong>same total weight</strong> (though the tree structure may differ).</p>
+
+          <!-- Check Your Understanding: MST -->
+          <div class="quiz-container" data-quiz="mst">
+            <p class="quiz-question">Which statement about Kruskal's and Prim's algorithms is correct for finding a Minimum Spanning Tree?</p>
+            <div class="quiz-options">
+              <label class="quiz-label"><input type="radio" name="q-mst" value="a"> Kruskal always produces a tree with a lower total weight than Prim.</label>
+              <label class="quiz-label"><input type="radio" name="q-mst" value="b" data-correct="true"> Both produce an MST with the exact same total minimum weight.</label>
+              <label class="quiz-label"><input type="radio" name="q-mst" value="c"> Prim's algorithm sorts all edges as its very first step.</label>
+            </div>
+            <button class="quiz-btn">Check Answer</button>
+            <div class="quiz-feedback hidden"></div>
+          </div>
+        </div>
+        <div class="section__diagram section__diagram--dual">
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Weighted Graph</h4>
+            <p class="diagram-card__caption">Input: 6 vertices, 8 edges with weights.</p>
+            <pre class="mermaid">
+graph LR
+    a((a)) -- "3" --- b((b))
+    a -- "7" --- f((f))
+    a -- "4" --- c((c))
+    b -- "4" --- c
+    f -- "1" --- c
+    c -- "9" --- d((d))
+    c -- "9" --- e((e))
+    e -- "5" --- d
+            </pre>
+          </div>
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">MST Result (Weight = 22)</h4>
+            <p class="diagram-card__caption">Kruskal picks: f-c(1), a-b(3), b-c(4), e-d(5), c-d(9). Total = 22.</p>
+            <pre class="mermaid">
+graph LR
+    a((a)) -- "3" --- b((b))
+    b -- "4" --- c((c))
+    f((f)) -- "1" --- c
+    e((e)) -- "5" --- d((d))
+    c -- "9" --- d
+    style a fill:#22c55e,stroke:#16a34a,color:#fff
+    style b fill:#22c55e,stroke:#16a34a,color:#fff
+    style c fill:#22c55e,stroke:#16a34a,color:#fff
+    style d fill:#22c55e,stroke:#16a34a,color:#fff
+    style e fill:#22c55e,stroke:#16a34a,color:#fff
+    style f fill:#22c55e,stroke:#16a34a,color:#fff
+            </pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ 11 COLORING & BIPARTITE ══════════════ -->
+    <section id="coloring" class="section">
+      <div class="section__header"><span class="section__number">11</span><h2 class="section__title">Graph Coloring, Bipartite & Line Graphs</h2></div>
+      <div class="section__body">
+        <div class="section__text">
+          <h3>k-Coloring & Chromatic Number</h3>
+          <p>A graph admits a <strong>k-coloring</strong> if its vertices can be partitioned into k independent sets such that <strong>no two adjacent vertices share the same color</strong>. The <strong>chromatic number</strong> <em>γ(G)</em> is the minimum k for which G is k-colorable.</p>
+          <div class="callout callout--definition">
+            <h4>Four Color Theorem</h4>
+            <p>Every <strong>planar graph</strong> is 4-colorable. No matter how complex the map, 4 colors always suffice to color regions so that adjacent regions have different colors.</p>
+          </div>
+          <h3>Bipartite Graphs</h3>
+          <p>A graph is <strong>bipartite</strong> if its vertices can be partitioned into two disjoint sets <em>U</em> and <em>W</em> such that every edge connects a vertex in U to one in W. Equivalently: <strong>γ(G) = 2</strong>, or G contains <strong>no odd-length cycles</strong>.</p>
+          <h3>Line Graphs L(G)</h3>
+          <p>The <strong>line graph</strong> L(G) represents edges of G as vertices: two vertices in L(G) are adjacent if the corresponding edges in G share a common endpoint. Edge coloring of G ≡ vertex coloring of L(G).</p>
+        </div>
+        <div class="section__diagram section__diagram--dual">
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">2-Colorable (Bipartite)</h4>
+            <p class="diagram-card__caption">γ(G)=2. Set U={A,C,E} (blue), Set W={B,D} (rose).</p>
+            <pre class="mermaid">
+graph LR
+    A((A)) --- B((B))
+    B --- C((C))
+    C --- D((D))
+    D --- E((E))
+    A --- D
+    style A fill:#3b82f6,stroke:#2563eb,color:#fff
+    style C fill:#3b82f6,stroke:#2563eb,color:#fff
+    style E fill:#3b82f6,stroke:#2563eb,color:#fff
+    style B fill:#f43f5e,stroke:#e11d48,color:#fff
+    style D fill:#f43f5e,stroke:#e11d48,color:#fff
+            </pre>
+          </div>
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">3-Colorable Graph</h4>
+            <p class="diagram-card__caption">γ(G)=3. Requires 3 colors due to odd cycle.</p>
+            <pre class="mermaid">
+graph TD
+    A((A)) --- B((B))
+    B --- C((C))
+    C --- A
+    A --- D((D))
+    B --- D
+    style A fill:#3b82f6,stroke:#2563eb,color:#fff
+    style B fill:#f43f5e,stroke:#e11d48,color:#fff
+    style C fill:#22c55e,stroke:#16a34a,color:#fff
+    style D fill:#22c55e,stroke:#16a34a,color:#fff
+            </pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════ 12 NETWORK FLOWS ══════════════ -->
+    <section id="flow" class="section section--alt">
+      <div class="section__header"><span class="section__number">12</span><h2 class="section__title">Network Flows & Ford-Fulkerson</h2></div>
+      <div class="section__body">
+        <div class="section__text">
+          <h3>Flow Networks</h3>
+          <p>A <strong>flow network</strong> is a directed, weighted graph with a <strong>source</strong> S (only outgoing edges) and a <strong>sink</strong> T (only incoming edges). Each arc has a <strong>capacity</strong> c (max flow allowed) and an actual <strong>flow</strong> f.</p>
+          <div class="callout callout--info">
+            <h4>Flow Conservation Law</h4>
+            <p>For every vertex except S and T: <em>∑ f(in) = ∑ f(out)</em>. The sum of flows arriving equals the sum leaving.</p>
+          </div>
+          <h3>Key Definitions</h3>
+          <ul class="term-list">
+            <li><strong>Saturated arc:</strong> flow = capacity (direct) or flow = 0 (reverse).</li>
+            <li><strong>Augmenting path:</strong> A path from S to T where flow can still be increased.</li>
+            <li><strong>Bottleneck:</strong> min(capacity − flow) along an augmenting path.</li>
+          </ul>
+          <h3>Ford-Fulkerson Algorithm</h3>
+          <div class="callout callout--definition">
+            <h4>Steps</h4>
+            <ol class="algo-steps">
+              <li>Initialize all flows to <strong>0</strong>. Set max_flow = 0.</li>
+              <li>Find an <strong>augmenting path</strong> from S to T using BFS (Edmonds-Karp variant).</li>
+              <li>Calculate <strong>bottleneck</strong> = min(capacity − flow) along the path.</li>
+              <li><strong>Update flows</strong>: add bottleneck to forward arcs, subtract from reverse arcs.</li>
+              <li>max_flow += bottleneck. <strong>Repeat</strong> from step 2.</li>
+              <li><strong>Stop</strong> when no augmenting path exists. max_flow is the answer.</li>
+            </ol>
+          </div>
+          <h3>Worked Example</h3>
+          <p>Given the network below with capacities on arcs:</p>
+          <ul class="term-list">
+            <li><strong>Iteration 1:</strong> Path S→c→b→T, bottleneck = min(8,6,4) = <strong>4</strong>. Flow = 4.</li>
+            <li><strong>Iteration 2:</strong> Path S→c→d→T, bottleneck = min(4,3,9) = <strong>3</strong>. Flow = 7.</li>
+            <li><strong>Iteration 3:</strong> Path S→a→d→T, bottleneck = min(3,2,6) = <strong>2</strong>. Flow = 9.</li>
+            <li>No more augmenting paths → <strong>Maximum flow = 9</strong>.</li>
+          </ul>
+          <h3>Cyclomatic & CoCyclomatic Numbers</h3>
+          <ul class="term-list">
+            <li><strong>Cyclomatic number:</strong> <em>μ(G) = m − n + p</em> — number of independent cycles. (m=edges, n=vertices, p=connected components)</li>
+            <li><strong>CoCyclomatic number:</strong> <em>λ(G) = n − p</em> — number of independent cut sets.</li>
+          </ul>
+
+          <!-- Check Your Understanding: Flow -->
+          <div class="quiz-container" data-quiz="flow">
+            <p class="quiz-question">In a flow network, what does the <em>Flow Conservation Law</em> state?</p>
+            <div class="quiz-options">
+              <label class="quiz-label"><input type="radio" name="q-flow" value="a"> All capacities must eventually reach 0.</label>
+              <label class="quiz-label"><input type="radio" name="q-flow" value="b"> The capacity of an incoming edge must equal the capacity of an outgoing edge.</label>
+              <label class="quiz-label"><input type="radio" name="q-flow" value="c" data-correct="true"> At every vertex (except source/sink), the sum of incoming flow equals the sum of outgoing flow.</label>
+            </div>
+            <button class="quiz-btn">Check Answer</button>
+            <div class="quiz-feedback hidden"></div>
+          </div>
+        </div>
+        <div class="section__diagram section__diagram--dual">
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Flow Network (Capacities)</h4>
+            <p class="diagram-card__caption">Source S, Sink T. Edge labels = capacities.</p>
+            <pre class="mermaid">
+graph LR
+    S((S)) -- "3" --> a((a))
+    S -- "8" --> c((c))
+    a -- "4" --> b((b))
+    a -- "2" --> d((d))
+    c -- "6" --> b
+    c -- "3" --> d
+    b -- "4" --> T((T))
+    d -- "9" --> T
+    style S fill:#3b82f6,stroke:#2563eb,color:#fff
+    style T fill:#f43f5e,stroke:#e11d48,color:#fff
+            </pre>
+          </div>
+          <div class="diagram-card">
+            <h4 class="diagram-card__title">Maximum Flow = 9</h4>
+            <p class="diagram-card__caption">Final flows: S→a:2, S→c:7, a→b:0, a→d:2, c→b:4, c→d:3, b→T:4, d→T:5.</p>
+            <pre class="mermaid">
+graph LR
+    S((S)) -- "2/3" --> a((a))
+    S -- "7/8" --> c((c))
+    a -- "0/4" --> b((b))
+    a -- "2/2" --> d((d))
+    c -- "4/6" --> b
+    c -- "3/3" --> d
+    b -- "4/4" --> T((T))
+    d -- "5/9" --> T
+    style S fill:#3b82f6,stroke:#2563eb,color:#fff
+    style T fill:#f43f5e,stroke:#e11d48,color:#fff
+    style a fill:#22c55e,stroke:#16a34a,color:#fff
+    style c fill:#22c55e,stroke:#16a34a,color:#fff
+    style b fill:#22c55e,stroke:#16a34a,color:#fff
+    style d fill:#22c55e,stroke:#16a34a,color:#fff
+            </pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer__content">
+      <p class="footer__brand">◈ Graph Theory — Complete Study Guide</p>
+      <p class="footer__copy">Covering Chapters 0–3 · Dr. Benaliouche Houda · Université Constantine 2</p>
+      <p class="footer__copy">Built with Mermaid.js & Vite</p>
+    </div>
+  </footer>
+
+  <button id="scroll-top-btn" class="scroll-top" aria-label="Scroll to top">↑</button>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
